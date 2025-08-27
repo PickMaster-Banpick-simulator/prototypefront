@@ -1,68 +1,46 @@
+// components/TeamSlot.jsx
 import React from "react";
+import styles from "../styles/TeamSlot.module.css";
 
-const TeamSlot = ({ teamName, side, picks = [], bans = [] }) => {
+const TeamSlot = ({ team, picks, bans }) => {
   return (
-    <div style={{ width: "200px", textAlign: "center" }}>
-      <h3 style={{ color: side === "blue" ? "blue" : "red" }}>{teamName}</h3>
-      <div>
-        <h4>밴</h4>
-        {bans.length > 0
-          ? bans.map((ban, idx) => (
-              <div
-                key={idx}
-                style={{
-                  border: "1px solid gray",
-                  margin: "5px",
-                  height: "40px",
-                  lineHeight: "40px",
-                }}
-              >
-                {ban}
-              </div>
-            ))
-          : [...Array(3)].map((_, idx) => (
-              <div
-                key={idx}
-                style={{
-                  border: "1px solid gray",
-                  margin: "5px",
-                  height: "40px",
-                  lineHeight: "40px",
-                }}
-              >
-                빈 슬롯
-              </div>
-            ))}
+    <div className={styles.teamContainer}>
+      <h2 className={team === "blue" ? styles.blueTitle : styles.redTitle}>
+        {team === "blue" ? "블루팀" : "레드팀"}
+      </h2>
+
+      {/* 픽 슬롯 */}
+      <div className={styles.pickContainer}>
+        {picks.map((champ, idx) => (
+          <div key={idx} className={styles.pickSlot}>
+            {champ ? (
+              <img
+                src={champ.image}
+                alt={champ.name}
+                className={styles.championImg}
+              />
+            ) : (
+              <span className={styles.emptySlot}>Pick</span>
+            )}
+          </div>
+        ))}
       </div>
-      <div>
-        <h4>픽</h4>
-        {picks.length > 0
-          ? picks.map((pick, idx) => (
-              <div
-                key={idx}
-                style={{
-                  border: "1px solid gray",
-                  margin: "5px",
-                  height: "40px",
-                  lineHeight: "40px",
-                }}
-              >
-                {pick}
-              </div>
-            ))
-          : [...Array(5)].map((_, idx) => (
-              <div
-                key={idx}
-                style={{
-                  border: "1px solid gray",
-                  margin: "5px",
-                  height: "40px",
-                  lineHeight: "40px",
-                }}
-              >
-                빈 슬롯
-              </div>
-            ))}
+
+      {/* 밴 슬롯 */}
+      <div className={styles.banContainer}>
+        {bans.map((champ, idx) => (
+          <div key={idx} className={styles.banSlot}>
+            {champ ? (
+              <img
+                src={champ.image}
+                alt={champ.name}
+                className={styles.championImg}
+              />
+            ) : (
+              <span className={styles.emptySlot}>Ban</span>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );

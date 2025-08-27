@@ -1,31 +1,32 @@
 import React from "react";
-import championsData from "../data/champions.json";
+import styles from "../styles/ChampionSelect.module.css";
 
-const ChampionSelect = ({ onSelect }) => {
-  const championList = Object.entries(championsData); // [ [name, {line}], ... ]
+const ChampionSelect = ({ champions, onSelect, selectedChampions = [] }) => {
+  const championList = champions && champions.data
+    ? Object.values(champions.data).map((champ) => ({
+        id: champ.id,
+        name: champ.name,
+        image: `https://ddragon.leagueoflegends.com/cdn/15.17.1/img/champion/${champ.image.full}`,
+      }))
+    : [];
 
   return (
-    <div style={{ width: "300px", border: "1px solid gray", padding: "10px" }}>
+    <div className={styles.championContainer}>
       <h3>챔피언 선택</h3>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
-        {championList.map(([name, info], idx) => (
-          <div
-            key={idx}
-            onClick={() => onSelect && onSelect(name)}
-            style={{
-              border: "1px solid black",
-              padding: "10px",
-              cursor: "pointer",
-              width: "80px",
-              textAlign: "center",
-            }}
-          >
-            {name}
-            <div style={{ fontSize: "0.7rem", color: "gray" }}>
-              {info.line.join(", ")}
+      <div className={styles.championGrid}>
+        {championList.map((champ) => {
+          const isDisabled = selectedChampions.includes(champ.name);
+          return (
+            <div
+              key={champ.id}
+              className={`${styles.championCard} ${isDisabled ? styles.disabled : ""}`}
+              onClick={() => !isDisabled && onSelect(champ)}
+            >
+              <img src={champ.image} alt={champ.name} />
+              <div className={styles.championName}>{champ.name}</div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

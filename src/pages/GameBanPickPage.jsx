@@ -3,9 +3,7 @@ import TeamSlot from "../components/TeamSlot";
 import ChampionSelect from "../components/ChampionSelect";
 import TurnTimer from "../components/TurnTimer";
 import styles from "../styles/Banpick.module.css";
-import champions from "../data/champions.json"; // ✅ default import
 
-// 밴픽 순서 (LoL 대회 룰 기반 확장)
 const BANPICK_ORDER = [
   { team: "blue", action: "ban" },
   { team: "red", action: "ban" },
@@ -13,19 +11,16 @@ const BANPICK_ORDER = [
   { team: "red", action: "ban" },
   { team: "blue", action: "ban" },
   { team: "red", action: "ban" },
-
   { team: "blue", action: "pick" },
   { team: "red", action: "pick" },
   { team: "red", action: "pick" },
   { team: "blue", action: "pick" },
   { team: "blue", action: "pick" },
   { team: "red", action: "pick" },
-
   { team: "red", action: "ban" },
   { team: "blue", action: "ban" },
   { team: "red", action: "ban" },
   { team: "blue", action: "ban" },
-
   { team: "red", action: "pick" },
   { team: "blue", action: "pick" },
   { team: "blue", action: "pick" },
@@ -33,6 +28,8 @@ const BANPICK_ORDER = [
 ];
 
 const GameBanPickPage = () => {
+  const [champions, setChampions] = useState(null);
+
   const [bluePicks, setBluePicks] = useState([null, null, null, null, null]);
   const [redPicks, setRedPicks] = useState([null, null, null, null, null]);
   const [blueBans, setBlueBans] = useState([null, null, null, null, null]);
@@ -43,7 +40,21 @@ const GameBanPickPage = () => {
 
   const currentTurn = BANPICK_ORDER[turnIndex];
 
-  // 타이머 로직
+  useEffect(() => {
+    const fetchChampions = async () => {
+      try {
+        const res = await fetch(
+          "https://ddragon.leagueoflegends.com/cdn/15.17.1/data/ko_KR/champion.json"
+        );
+        const data = await res.json();
+        setChampions(data);
+      } catch (error) {
+        console.error("챔피언 데이터 로드 실패:", error);
+      }
+    };
+    fetchChampions();
+  }, []);
+
   useEffect(() => {
     if (turnIndex >= BANPICK_ORDER.length) return;
 
@@ -62,66 +73,58 @@ const GameBanPickPage = () => {
     return () => clearInterval(timer);
   }, [turnIndex]);
 
-  // 선택 처리
   const handleSelectChampion = (champion) => {
     if (!currentTurn) return;
 
     const { team, action } = currentTurn;
 
+    const updateSlot = (arr, setArr) => {
+      const idx = arr.findIndex((p) => p === null);
+      if (idx !== -1) {
+        const updated = [...arr];
+        updated[idx] = champion.name;
+        setArr(updated);
+      }
+    };
+
     if (action === "pick") {
-      if (team === "blue") {
-        const idx = bluePicks.findIndex((p) => p === null);
-        if (idx !== -1) {
-          const updated = [...bluePicks];
-          updated[idx] = champion;
-          setBluePicks(updated);
-        }
-      } else {
-        const idx = redPicks.findIndex((p) => p === null);
-        if (idx !== -1) {
-          const updated = [...redPicks];
-          updated[idx] = champion;
-          setRedPicks(updated);
-        }
-      }
+      team === "blue" ? updateSlot(bluePicks, setBluePicks) : updateSlot(redPicks, setRedPicks);
     } else if (action === "ban") {
-      if (team === "blue") {
-        const idx = blueBans.findIndex((b) => b === null);
-        if (idx !== -1) {
-          const updated = [...blueBans];
-          updated[idx] = champion;
-          setBlueBans(updated);
-        }
-      } else {
-        const idx = redBans.findIndex((b) => b === null);
-        if (idx !== -1) {
-          const updated = [...redBans];
-          updated[idx] = champion;
-          setRedBans(updated);
-        }
-      }
+      team === "blue" ? updateSlot(blueBans, setBlueBans) : updateSlot(redBans, setRedBans);
     }
 
     setTurnIndex((prev) => prev + 1);
   };
 
-  // 시간 초과 시 스킵
   const handleSkip = () => {
     setTurnIndex((prev) => prev + 1);
   };
 
+  const selectedChampions = [
+    ...bluePicks,
+    ...redPicks,
+    ...blueBans,
+    ...redBans,
+  ].filter(Boolean);
+
   return (
     <div className={styles.banpickContainer}>
-      {/* 블루팀 */}
       <TeamSlot team="blue" picks={bluePicks} bans={blueBans} />
-
-      {/* 중앙 챔피언 선택 */}
-      <div>
+      <div className={styles.centerContainer}>
         <TurnTimer timeLeft={timeLeft} />
-        <ChampionSelect champions={champions} onSelect={handleSelectChampion} />
+        <p style={{ color: "#fff", textAlign: "center" }}>
+          {currentTurn?.team.toUpperCase()}팀 {currentTurn?.action.toUpperCase()} 중
+        </p>
+        {champions ? (
+          <ChampionSelect
+            champions={champions}
+            onSelect={handleSelectChampion}
+            selectedChampions={selectedChampions}
+          />
+        ) : (
+          <p className={styles.loading}>챔피언 데이터를 불러오는 중...</p>
+        )}
       </div>
-
-      {/* 레드팀 */}
       <TeamSlot team="red" picks={redPicks} bans={redBans} />
     </div>
   );

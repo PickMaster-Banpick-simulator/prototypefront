@@ -1,0 +1,49 @@
+.championContainer {
+    width: 600px;
+    margin: 0 auto;
+    padding: 10px;
+    border: 1px solid #555;
+    border-radius: 8px;
+    background-color: #1f1f1f;
+    color: #fff;
+  }
+  
+  .championGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 10px;
+    justify-items: center;
+  }
+  
+  .championCard {
+    border: 1px solid #888;
+    border-radius: 6px;
+    padding: 5px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #2b2b2b;
+    transition: all 0.2s;
+  }
+  
+  .championCard:hover {
+    transform: scale(1.05);
+    border-color: #fff;
+  }
+  
+  .disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  
+  .championCard img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  .championName {
+    font-size: 0.8rem;
+    margin-top: 4px;
+  }
+  
