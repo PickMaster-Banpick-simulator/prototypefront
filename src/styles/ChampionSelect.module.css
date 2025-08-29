@@ -1,49 +1,47 @@
-.championContainer {
-    width: 600px;
-    margin: 0 auto;
-    padding: 10px;
-    border: 1px solid #555;
-    border-radius: 8px;
-    background-color: #1f1f1f;
-    color: #fff;
-  }
-  
-  .championGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-    gap: 10px;
-    justify-items: center;
-  }
-  
-  .championCard {
-    border: 1px solid #888;
-    border-radius: 6px;
-    padding: 5px;
-    text-align: center;
-    cursor: pointer;
-    background-color: #2b2b2b;
-    transition: all 0.2s;
-  }
-  
-  .championCard:hover {
-    transform: scale(1.05);
-    border-color: #fff;
-  }
-  
-  .disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-  
-  .championCard img {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 4px;
-  }
-  
-  .championName {
-    font-size: 0.8rem;
-    margin-top: 4px;
-  }
-  
+.championGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+}
+
+.championGrid button {
+  width: 56px;
+  height: 72px;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background-color: #111;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 2px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.15s, background-color 0.15s;
+}
+
+.championGrid button:hover:not(:disabled) {
+  transform: scale(1.08);
+  background-color: #222;
+}
+
+.championGrid button img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.championGrid button div {
+  font-size: 0.65rem;
+  text-align: center;
+  margin-top: 2px;
+  line-height: 1rem;
+}
+
+.disabledButton {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

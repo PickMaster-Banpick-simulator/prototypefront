@@ -1,24 +1,120 @@
+/* 전체 팀 컨테이너 */
+.team-blue,
+.team-red {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+}
+
+/* 파랑 팀 (왼쪽) */
+.team-blue {
+  background-color: #1b2735;
+  border: 2px solid #00aaff;
+  border-radius: 12px;
+}
+
+/* 빨강 팀 (오른쪽) */
+.team-red {
+  background-color: #2b1a1a;
+  border: 2px solid #ff4444;
+  border-radius: 12px;
+}
+
+/* 픽 영역 */
+.picks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 밴 영역 */
+.bans {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+/* 슬롯 공통 */
+.slot {
+  width: 64px;
+  height: 64px;
+  background-color: #0d0d0d;
+  border: 1px solid #444;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 빈 슬롯 (아직 픽/밴 안 됐을 때) */
+.emptySlot {
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    45deg,
+    #222,
+    #222 10px,
+    #333 10px,
+    #333 20px
+  );
+  opacity: 0.5;
+  border-radius: 6px;
+}
+.emptySlot::after {
+  content: "X";
+  color: #666;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* 전체 밴픽 컨테이너 */
 .banpickContainer {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: flex-start;
+    gap: 20px;
     padding: 20px;
-    background-color: #121212;
+    background-color: #0a0a0a;
     min-height: 100vh;
     color: #fff;
+    font-family: "Noto Sans KR", sans-serif;
   }
   
+  /* 중앙 영역 */
   .centerContainer {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
+    gap: 16px;
   }
   
-  .loading {
-    color: #fff;
+  /* 타이머 */
+  .timer {
+    font-size: 32px;
+    font-weight: bold;
+    color: #ffcc00;
+    background-color: #1a1a1a;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 2px solid #ffcc00;
     text-align: center;
-    font-size: 1.2rem;
-    padding: 20px;
+  }
+  
+  /* 로딩 메시지 */
+  .loading {
+    font-size: 18px;
+    color: #bbb;
+    margin-top: 20px;
   }
   

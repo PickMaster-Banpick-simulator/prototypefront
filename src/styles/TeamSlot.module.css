@@ -1,46 +1,63 @@
-.teamContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 10px;
-  }
-  
-  .blueTitle {
-    color: #3b82f6;
-  }
-  
-  .redTitle {
-    color: #ef4444;
-  }
-  
-  .pickContainer,
-  .banContainer {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-  }
-  
-  .pickSlot,
-  .banSlot {
-    width: 64px;
-    height: 64px;
-    border: 2px solid gray;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #111;
-    border-radius: 8px;
-  }
-  
-  .championImg {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 6px;
-  }
-  
-  .emptySlot {
-    font-size: 0.8rem;
-    color: gray;
-  }
-  
+.team-blue, .team-red {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.teamName {
+  font-size: 0.8rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+/* 픽은 세로 */
+.picks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 4px 0;
+}
+
+/* 밴은 가로 */
+.bans {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 0.4rem;
+  margin: 6px 0;
+}
+
+/* 슬롯 공통 */
+.slot {
+  width: 54px;
+  height: 54px;
+  border: 2px solid #333;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #111;
+}
+
+.slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.emptySlot {
+  width: 100%;
+  height: 100%;
+  background-color: #222;
+}
+
+/* 팀별 강조 */
+.blueSlot {
+  border: 2px solid #00aaff;
+}
+
+.redSlot {
+  border: 2px solid #ff4444;
+}
