@@ -1,3 +1,4 @@
+
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormLabel from "@mui/material/FormLabel";
@@ -19,7 +20,9 @@ const CustomFormControlRadioGroup = ({
       sx={{
         color: "#D3D3D3",
         fontSize: "1.5rem",
-        "&.Mui-focused": { color: "#D3D3D3" },
+        "&.Mui-focused": {
+          color: "#D3D3D3",
+        },
       }}
     >
       {mainLabelName}
@@ -39,7 +42,9 @@ const CustomFormControlRadioGroup = ({
             <Radio
               sx={{
                 color: "white",
-                "& .MuiSvgIcon-root": { fontSize: 28 },
+                "& .MuiSvgIcon-root": {
+                  fontSize: 28,
+                },
               }}
             />
           }

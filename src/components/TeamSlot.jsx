@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "../styles/TeamSlot.module.css";
 
-const TeamSlot = ({ team, picks, bans }) => {
+const TeamSlot = ({ team, picks, bans, teamName }) => {
   const renderSlot = (champion, index) => {
     const imgUrl = champion?.image;
     return (
@@ -16,7 +16,7 @@ const TeamSlot = ({ team, picks, bans }) => {
 
   return (
     <div className={styles[`team-${team}`]}>
-      <div className={styles.teamName}>{team === "blue" ? "블루팀" : "레드팀"}</div>
+      <div className={styles.teamName}>{teamName ? teamName : (team === "blue" ? "블루팀" : "레드팀")}</div>
       <div className={styles.picks}>{picks.map(renderSlot)}</div>
       <div className={styles.bans}>{bans.map(renderSlot)}</div>
     </div>
