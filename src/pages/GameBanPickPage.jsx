@@ -91,6 +91,8 @@ const GameBanPickPage = () => {
   const [blueWins, setBlueWins] = useState(0);
   const [redWins, setRedWins] = useState(0);
 
+  const [seriesUsedChampions, setSeriesUsedChampions] = useState([]);
+
   const [champions, setChampions] = useState([]);
   const [bluePicks, setBluePicks] = useState([null, null, null, null, null]);
   const [redPicks, setRedPicks] = useState([null, null, null, null, null]);
@@ -246,16 +248,28 @@ const GameBanPickPage = () => {
         } else if (currentTurn?.team === 'red') {
             unselectableNames = [...unselectableNames, ...redPicks.filter(Boolean).map(c => c.name)];
         }
-    } else if (banpickMode === 'hardFearless') {
+    }
+    if (banpickMode === 'hardFearless') {
         // 하드 피어리스: 양 팀에서 한번이라도 나온 챔피언은 다시 못 고름
         unselectableNames = [...unselectableNames, ...pickedNames];
     }
 
+    // 시리즈 전체에서 사용된 챔피언 제외
+    if (banpickMode === 'hardFearless' || banpickMode === 'softFearless') {
+      unselectableNames = [...unselectableNames, ...seriesUsedChampions];
+    }
 
     return champions.filter((c) => !unselectableNames.includes(c.name));
   };
 
   const handleWin = (winningTeam) => {
+    if (banpickMode === 'hardFearless' || banpickMode === 'softFearless') {
+      const usedInSet = [...bluePicks, ...redPicks, ...blueBans, ...redBans]
+        .filter(Boolean)
+        .map((c) => c.name);
+      setSeriesUsedChampions((prev) => [...new Set([...prev, ...usedInSet])]);
+    }
+
     if (winningTeam === 'blue') {
       setBlueWins(prev => prev + 1);
     } else {
