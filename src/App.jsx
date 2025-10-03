@@ -6,7 +6,7 @@ const App = () => {
   return (
     <Routes>
       <Route path="/" element={<LobbyPage/>} />
-      <Route path="/game" element={<GameBanPickPage />} />
+      <Route path="/ban-pick/:roomId" element={<GameBanPickPage />} />
     </Routes>
   );
 };

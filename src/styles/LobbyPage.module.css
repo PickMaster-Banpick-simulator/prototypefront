@@ -1,0 +1,32 @@
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 1rem;
+  padding: 2rem;
+  background-color: #f0f2f5;
+}
+
+.formContainer {
+  padding: 2rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.logoImage {
+  margin-top: 0.5rem;
+  border-radius: 4px;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+}
