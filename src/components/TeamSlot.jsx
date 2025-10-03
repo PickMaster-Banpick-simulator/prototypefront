@@ -1,25 +1,56 @@
-import React from "react";
-import styles from "../styles/TeamSlot.module.css";
 
-const TeamSlot = ({ team, picks, bans, teamName }) => {
-  const renderSlot = (champion, index) => {
-    const imgUrl = champion?.image;
-    return (
-      <div
-        className={`${styles.slot} ${team === "blue" ? styles.blueSlot : styles.redSlot}`}
-        key={index}
-      >
-        {imgUrl ? <img src={imgUrl} alt={champion.name} /> : <div className={styles.emptySlot}></div>}
-      </div>
-    );
-  };
+import React from 'react';
+import { useRoomStore } from '../store/roomStore';
+import { Box, Typography, Paper } from '@mui/material';
+import styles from '../styles/TeamSlot.module.css';
+
+const TeamSlot = ({ team, picks, bans }) => {
+  const { blueTeamName, redTeamName } = useRoomStore();
+  const teamName = team === 'blue' ? blueTeamName : redTeamName;
+
+  const BanCard = ({ champion }) => (
+    <Paper className={styles.banCard} elevation={2}>
+      {champion ? (
+        <img src={champion.image} alt={champion.name} className={`${styles.championImage} ${styles.bannedImage}`} />
+      ) : (
+        <Box className={styles.emptySlot} />
+      )}
+    </Paper>
+  );
+
+  const PickCard = ({ champion }) => (
+    <Paper className={styles.pickCard} elevation={2}>
+      {champion ? (
+        <>
+          <img src={champion.image} alt={champion.name} className={styles.championImage} />
+          <Typography className={styles.championName}>{champion.name}</Typography>
+        </>
+      ) : (
+        <Box className={styles.emptySlot} />
+      )}
+    </Paper>
+  );
 
   return (
-    <div className={styles[`team-${team}`]}>
-      <div className={styles.teamName}>{teamName ? teamName : (team === "blue" ? "블루팀" : "레드팀")}</div>
-      <div className={styles.picks}>{picks.map(renderSlot)}</div>
-      <div className={styles.bans}>{bans.map(renderSlot)}</div>
-    </div>
+    <Box className={styles.teamSlotContainer}>
+      <Typography variant="h4" className={`${styles.teamName} ${styles[team]}`}>
+        {teamName || (team === 'blue' ? 'Blue Team' : 'Red Team')}
+      </Typography>
+
+      <Box mb={3}>
+        <Typography variant="h6" className={styles.sectionTitle}>BANS</Typography>
+        <Box className={styles.cardList}>
+          {bans.map((ban, index) => <BanCard key={index} champion={ban} />)}
+        </Box>
+      </Box>
+
+      <Box>
+        <Typography variant="h6" className={styles.sectionTitle}>PICKS</Typography>
+        <Box className={styles.cardList}>
+          {picks.map((pick, index) => <PickCard key={index} champion={pick} />)}
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

@@ -1,0 +1,49 @@
+
+.pageContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1rem;
+    background-color: #111827; /* theme.palette.background.default */
+}
+
+.banpickLayout {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1600px; /* 최대 너비 설정 */
+    gap: 1rem;
+}
+
+.teamContainer {
+    flex: 1;
+}
+
+.centerContainer {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.winnerDeclaration {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    background-color: #1f2937; /* theme.palette.background.paper */
+    border-radius: 12px;
+}
+
+.seriesWinnerContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+}

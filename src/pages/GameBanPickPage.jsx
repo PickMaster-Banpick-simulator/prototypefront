@@ -1,207 +1,169 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import TeamSlot from "../components/TeamSlot";
 import ChampionSelect from "../components/ChampionSelect";
 import TurnTimer from "../components/TurnTimer";
-import styles from "../styles/Banpick.module.css";
-
-import { over } from "stompjs";
-import SockJS from "sockjs-client";
+import SeriesScoreboard from "../components/SeriesScoreboard";
+import { useRoomStore } from "../store/roomStore";
+import {
+  Box,
+  Typography,
+  Button,
+  Container,
+  Paper,
+} from "@mui/material";
+import styles from "../styles/GameBanPickPage.module.css";
 
 const BANPICK_ORDER = [
-  { team: "blue", action: "ban" },
-  { team: "red", action: "ban" },
-  { team: "blue", action: "ban" },
-  { team: "red", action: "ban" },
-  { team: "blue", action: "ban" },
-  { team: "red", action: "ban" },
-  { team: "blue", action: "pick" },
-  { team: "red", action: "pick" },
-  { team: "red", action: "pick" },
-  { team: "blue", action: "pick" },
-  { team: "blue", action: "pick" },
-  { team: "red", action: "pick" },
-  { team: "red", action: "ban" },
-  { team: "blue", action: "ban" },
-  { team: "red", action: "ban" },
-  { team: "blue", action: "ban" },
-  { team: "red", action: "pick" },
-  { team: "blue", action: "pick" },
-  { team: "blue", action: "pick" },
-  { team: "red", action: "pick" },
+  { team: "blue", action: "ban" }, { team: "red", action: "ban" },
+  { team: "blue", action: "ban" }, { team: "red", action: "ban" },
+  { team: "blue", action: "ban" }, { team: "red", action: "ban" },
+  { team: "blue", action: "pick" }, { team: "red", action: "pick" },
+  { team: "red", action: "pick" }, { team: "blue", action: "pick" },
+  { team: "blue", action: "pick" }, { team: "red", action: "pick" },
+  { team: "red", action: "ban" }, { team: "blue", action: "ban" },
+  { team: "red", action: "ban" }, { team: "blue", action: "ban" },
+  { team: "red", action: "pick" }, { team: "blue", action: "pick" },
+  { team: "blue", action: "pick" }, { team: "red", action: "pick" },
 ];
 
-import { useParams } from "react-router-dom";
-
-let stompClient = null;
-
 const GameBanPickPage = () => {
-  const { roomId } = useParams();
+  const navigate = useNavigate();
+  const store = useRoomStore();
+
   const [champions, setChampions] = useState([]);
-  const [bluePicks, setBluePicks] = useState([null, null, null, null, null]);
-  const [redPicks, setRedPicks] = useState([null, null, null, null, null]);
-  const [blueBans, setBlueBans] = useState([null, null, null, null, null]);
-  const [redBans, setRedBans] = useState([null, null, null, null, null]);
   const [turnIndex, setTurnIndex] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(30);
-  const [blueTeamId, setBlueTeamId] = useState(null);
-  const [redTeamId, setRedTeamId] = useState(null);
+  const [blueBans, setBlueBans] = useState(Array(5).fill(null));
+  const [redBans, setRedBans] = useState(Array(5).fill(null));
+  const [bluePicks, setBluePicks] = useState(Array(5).fill(null));
+  const [redPicks, setRedPicks] = useState(Array(5).fill(null));
+  const [seriesWinner, setSeriesWinner] = useState(null);
 
   const currentTurn = BANPICK_ORDER[turnIndex];
+  const isBanpickFinished = turnIndex >= BANPICK_ORDER.length;
 
-  // Riot API 불러오기
+  const resetBoard = () => {
+    setTurnIndex(0);
+    setBlueBans(Array(5).fill(null));
+    setRedBans(Array(5).fill(null));
+    setBluePicks(Array(5).fill(null));
+    setRedPicks(Array(5).fill(null));
+  };
+
   useEffect(() => {
     const fetchChampions = async () => {
       try {
-        const res = await fetch(
-          "https://ddragon.leagueoflegends.com/cdn/15.17.1/data/ko_KR/champion.json"
-        );
-        const data = await res.json();
-        const championsArr = Object.values(data.data).map((c) => ({
+        const res = await fetch("https://ddragon.leagueoflegends.com/api/versions.json");
+        const versions = await res.json();
+        const latest = versions[0];
+        const champRes = await fetch(`https://ddragon.leagueoflegends.com/cdn/${latest}/data/ko_KR/champion.json`);
+        const champData = await champRes.json();
+        const champArray = Object.values(champData.data).map((c) => ({
           id: c.id,
           name: c.name,
-          image: `https://ddragon.leagueoflegends.com/cdn/${data.version}/img/champion/${c.image.full}`,
-          tags: c.tags,
+          image: `https://ddragon.leagueoflegends.com/cdn/${latest}/img/champion/${c.image.full}`,
         }));
-        setChampions(championsArr);
+        setChampions(champArray);
       } catch (err) {
-        console.error("챔피언 데이터 로드 실패:", err);
+        console.error("챔피언 데이터 로딩 실패:", err);
       }
     };
     fetchChampions();
   }, []);
 
-  // WebSocket 연결
   useEffect(() => {
-    if (!roomId) return;
-    const socket = new SockJS("http://localhost:8080/ws");
-    stompClient = over(socket);
+    resetBoard();
+  }, [store.gameSeries.currentGame]);
 
-    stompClient.connect({}, () => {
-      stompClient.subscribe(`/topic/banpick/progress/${roomId}`, (msg) => {
-        const progress = JSON.parse(msg.body);
-
-        // 서버에서 내려주는 현재 상태 반영
-        setBluePicks(progress.bluePicks || [null, null, null, null, null]);
-        setRedPicks(progress.redPicks || [null, null, null, null, null]);
-        setBlueBans(progress.blueBans || [null, null, null, null, null]);
-        setRedBans(progress.redBans || [null, null, null, null, null]);
-        setTurnIndex(progress.turnIndex || 0);
-
-        // 팀 ID가 있다면 상태에 저장
-        if (progress.blueTeamId) setBlueTeamId(progress.blueTeamId);
-        if (progress.redTeamId) setRedTeamId(progress.redTeamId);
-      });
-
-      stompClient.subscribe(`/topic/banpick/complete/${roomId}`, (msg) => {
-        alert("밴픽 완료!");
-      });
-
-      stompClient.subscribe(`/topic/banpick/error/${roomId}`, (msg) => {
-        alert("에러: " + msg.body);
-      });
-
-      // 컴포넌트 언마운트 시 연결 해제
-      return () => {
-        if (stompClient) {
-          stompClient.disconnect();
-        }
-      };
-    });
-  }, [roomId]);
-
-  // 타이머
   useEffect(() => {
-    if (!currentTurn) return;
-    setTimeLeft(30);
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          handleSkip();
-          return 30;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [turnIndex]);
+    const requiredWins = store.gameMode === 'BO3' ? 2 : 3;
+    if (store.gameSeries.blueWins === requiredWins) setSeriesWinner(store.blueTeamName);
+    else if (store.gameSeries.redWins === requiredWins) setSeriesWinner(store.redTeamName);
+  }, [store.gameSeries.blueWins, store.gameSeries.redWins, store.gameMode, store.blueTeamName, store.redTeamName]);
 
-  // 챔피언 선택 → 서버로 전송
   const handleSelectChampion = (champion) => {
-    if (!currentTurn || !stompClient) return;
+    if (!currentTurn || isBanpickFinished) return;
 
-    const currentTeamId = currentTurn.team === 'blue' ? blueTeamId : redTeamId;
-    if (!currentTeamId) {
-      console.error("Current team ID is not set! Cannot send message.");
-      return;
-    }
+    const setter = currentTurn.team === 'blue' 
+        ? (currentTurn.action === 'ban' ? setBlueBans : setBluePicks)
+        : (currentTurn.action === 'ban' ? setRedBans : setRedPicks);
+    
+    setter(prev => {
+        const newArr = [...prev];
+        const idx = newArr.findIndex(val => val === null);
+        if (idx !== -1) newArr[idx] = champion;
+        return newArr;
+    });
 
-    const message = {
-      teamId: currentTeamId,
-      championId: champion.id,
-      actionType: currentTurn.action.toUpperCase(), // "BAN" or "PICK"
-    };
-
-    stompClient.send(`/app/select/${roomId}`, {}, JSON.stringify(message));
+    setTurnIndex(prev => prev + 1);
   };
 
-  const handleSkip = () => {
-    if (!currentTurn || !stompClient) return;
+  const handleFinishGame = (winner) => {
+    store.finishGame({ bluePicks, redPicks, blueBans, redBans, winner });
+  };
+  
+  const handleReturnToLobby = () => {
+    store.startGameSeries();
+    navigate('/');
+  }
 
-    const currentTeamId = currentTurn.team === 'blue' ? blueTeamId : redTeamId;
-    if (!currentTeamId) {
-      console.error("Current team ID is not set! Cannot skip turn.");
-      return;
+  const getUnselectableChampionNames = () => {
+    const picked = [...bluePicks, ...redPicks].filter(Boolean).map(c => c.name);
+    const banned = [...blueBans, ...redBans].filter(Boolean).map(c => c.name);
+    let unselectable = [...new Set([...picked, ...banned])];
+    if (store.gameMode === 'hardFearless') {
+        unselectable = [...new Set([...unselectable, ...store.fearlessPicks.map(p => p.name)])];
     }
+    return unselectable;
+  };
 
-    const message = {
-      teamId: currentTeamId,
-      actionType: 'SKIP',
-    };
-
-    stompClient.send(
-      `/app/select/${roomId}`,
-      {},
-      JSON.stringify(message)
+  if (seriesWinner) {
+    return (
+      <Box className={styles.seriesWinnerContainer}>
+        <Typography variant="h1" gutterBottom>SERIES WINNER</Typography>
+        <Typography variant="h2" color="primary" sx={{ mb: 4 }}>{seriesWinner}</Typography>
+        <Button variant="contained" size="large" onClick={handleReturnToLobby}>
+          로비로 돌아가기
+        </Button>
+      </Box>
     );
-  };
-
-  const selectedChampions = [
-    ...bluePicks,
-    ...redPicks,
-    ...blueBans,
-    ...redBans,
-  ].filter(Boolean);
-
-  const getAvailableChampions = () => {
-    const pickedNames = [...bluePicks, ...redPicks].filter(Boolean).map((c) => c.name);
-    const bannedNames = [...blueBans, ...redBans]
-      .filter(Boolean)
-      .map((c) => c.name);
-    const unselectableNames = [...bannedNames, ...pickedNames];
-    return champions.filter((c) => !unselectableNames.includes(c.name));
-  };
+  }
 
   return (
-    <div className={styles.banpickContainer}>
-      <TeamSlot team="blue" picks={bluePicks} bans={blueBans} />
-      <div className={styles.centerContainer}>
-        <TurnTimer timeLeft={timeLeft} />
-        <p className={styles.turnInfo}>
-          {currentTurn?.team.toUpperCase()}팀 {currentTurn?.action.toUpperCase()} 중
-        </p>
-        {champions.length ? (
-          <ChampionSelect
-            champions={getAvailableChampions()}
-            onSelect={handleSelectChampion}
-            selectedChampions={selectedChampions.map((c) => c.name)}
-          />
-        ) : (
-          <p className={styles.loading}>챔피언 데이터를 불러오는 중...</p>
-        )}
-      </div>
-      <TeamSlot team="red" picks={redPicks} bans={redBans} />
-    </div>
+    <Container maxWidth="xl" className={styles.pageContainer}>
+      <SeriesScoreboard />
+      <Box className={styles.banpickLayout}>
+        <Box className={styles.teamContainer}>
+          <TeamSlot team="blue" bans={blueBans} picks={bluePicks} />
+        </Box>
+
+        <Box className={styles.centerContainer}>
+          {isBanpickFinished ? (
+            <Paper className={styles.winnerDeclaration} elevation={3}>
+              <Typography variant="h4">게임 {store.gameSeries.currentGame} 종료</Typography>
+              <Typography>승리 팀을 선택하세요:</Typography>
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <Button variant="contained" color="info" onClick={() => handleFinishGame('blue')}>{store.blueTeamName} 승리</Button>
+                <Button variant="contained" color="error" onClick={() => handleFinishGame('red')}>{store.redTeamName} 승리</Button>
+              </Box>
+            </Paper>
+          ) : (
+            <>
+              <TurnTimer />
+              <ChampionSelect
+                champions={champions}
+                onSelect={handleSelectChampion}
+                disabledChampions={getUnselectableChampionNames()}
+              />
+            </>
+          )}
+        </Box>
+
+        <Box className={styles.teamContainer}>
+          <TeamSlot team="red" bans={redBans} picks={redPicks} />
+        </Box>
+      </Box>
+    </Container>
   );
 };
 

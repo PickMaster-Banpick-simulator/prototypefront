@@ -1,112 +1,53 @@
-.banpickContainer {
+.championGrid {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 20px;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  max-width: 600px;
+}
+
+.championGrid button {
+  width: 64px;
+  height: 80px;
+  border: 2px solid #3c3c4c;
+  border-radius: 8px;
   background-color: #1e2328;
-  color: white;
-  min-height: 100vh;
-}
-
-.centerContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 60%;
-}
-
-.turnInfo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-top: 20px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.loading {
-  font-size: 1.2rem;
-  margin-top: 50px;
-}
-
-/* 스코어보드 */
-.scoreBoard {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 2rem;
-  font-weight: bold;
-  padding: 10px;
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
-  margin-bottom: 20px;
-}
-
-.scoreBoard span:first-child {
-  margin-right: 30px;
-}
-
-/* 세트/게임 종료 UI */
-.gameEndContainer,
-.setEndContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 40px;
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 15px;
-  margin-top: 50px;
-}
-
-.gameEndTitle,
-.setEndTitle {
-  font-size: 2.5rem;
-  font-weight: bold;
   color: #c4b998;
-  margin-bottom: 20px;
-}
-
-.gameEndWinner {
-  font-size: 2rem;
-  color: #4caf50;
-  margin-bottom: 10px;
-}
-
-.gameEndScore {
-  font-size: 1.8rem;
-}
-
-.setEndInstruction {
-  font-size: 1.2rem;
-  margin-bottom: 30px;
-}
-
-.winButtonContainer {
   display: flex;
-  gap: 20px;
-}
-
-.winButton {
-  padding: 15px 30px;
-  border: none;
-  border-radius: 10px;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: white;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 4px;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.winButton:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+.championGrid button img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #000;
 }
 
-.blueButton {
-  background-color: #005a82;
+.championGrid button div {
+  font-size: 0.7rem;
+  text-align: center;
+  margin-top: 4px;
+  line-height: 1.1;
+  font-weight: bold;
 }
 
-.redButton {
-  background-color: #c62828;
+/* 선택/밴된 챔피언 회색 처리 */
+.disabledButton {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(100%);
+}
+
+.disabledButton:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: #3c3c4c;
 }
