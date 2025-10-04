@@ -7,7 +7,7 @@ export const useWebSocket = (roomId, onMessage) => {
 
   useEffect(() => {
     const client = new Client({
-      brokerURL: "ws://localhost:8080/ws",
+      brokerURL: "ws://localhost:8000/ws",
       onConnect: () => {
         client.subscribe(`/topic/room/${roomId}`, (message) => {
           const payload = JSON.parse(message.body);

@@ -1,0 +1,59 @@
+.historyContainer {
+    width: 100%;
+    max-width: 1600px;
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #1f2937;
+    border-radius: 8px;
+}
+.gameRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #30363d;
+}
+.gameRow:last-child {
+    border-bottom: none;
+}
+.gameNumber {
+    flex-basis: 80px;
+    font-weight: bold;
+    color: #8b949e;
+}
+.teamHistory {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.championIcons {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+.championIconsRight {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-left: auto;
+}
+.championIcons img {
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+}
+.divider {
+    width: 2px;
+    height: 20px;
+    background-color: #4b5563;
+    margin: 0 0.5rem;
+}
+.teamNameBlue { 
+    color: #58a6ff; 
+    font-weight: bold; 
+}
+.teamNameRed { 
+    color: #f85149; 
+    font-weight: bold; 
+}

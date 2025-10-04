@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Box, TextField, Paper, Typography, CircularProgress } from '@mui/material';
 import styles from '../styles/ChampionSelect.module.css';

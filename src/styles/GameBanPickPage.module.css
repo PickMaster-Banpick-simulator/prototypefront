@@ -1,49 +1,82 @@
-
-.pageContainer {
+.gbpPageContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
     padding: 1rem;
-    background-color: #111827; /* theme.palette.background.default */
-}
-
-.banpickLayout {
+    background-color: #111827;
+  }
+  
+  .gbpBanpickLayout {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    max-width: 1600px; /* 최대 너비 설정 */
+    max-width: 1600px;
     gap: 1rem;
-}
-
-.teamContainer {
+  }
+  
+  .gbpTeamContainer {
     flex: 1;
-}
-
-.centerContainer {
+  }
+  
+  .gbpCenterContainer {
     flex: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1rem;
-}
-
-.winnerDeclaration {
+  }
+  
+  .gbpWinnerDeclaration {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 1.5rem;
     padding: 2rem;
-    background-color: #1f2937; /* theme.palette.background.paper */
+    background-color: #1f2937;
     border-radius: 12px;
-}
-
-.seriesWinnerContainer {
+  }
+  
+  .gbpSeriesWinnerContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
     width: 100%;
-}
+  }
+  
+  .gbpPreviousGamesContainer {
+    width: 100%;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .gbpHistoryGame {
+    background-color: #1f2937;
+    padding: 0.5rem;
+    border-radius: 8px;
+  }
+  
+  .gbpHistoryRow {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.25rem;
+  }
+  
+  .gbpHistoryChampions {
+    display: flex;
+    gap: 2px;
+    flex-wrap: wrap;
+  }
+  
+  .gbpHistoryImage {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    object-fit: cover;
+  }
+  
